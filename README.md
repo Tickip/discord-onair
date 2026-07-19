@@ -34,13 +34,19 @@ service manager needed. Registering it as a scheduled task that fires at
 logon makes it come up automatically every time you sign in.
 
 1. Build first, so `dist/index.js` exists: `npm run build`
-2. Register the task (run once, from a regular terminal — no admin needed):
+2. Register the task (run once, from an **elevated** PowerShell — right-click
+   PowerShell → "Run as Administrator"; creating the task needs admin rights,
+   but it runs as your normal user afterward since it's registered with
+   `/RL LIMITED`):
 
    ```
-   schtasks /Create /TN "DiscordOnAir" /TR "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\Dev\bots\discord-onair\scripts\run-forever.ps1\"" /SC ONLOGON /RL LIMITED /F
+   schtasks /Create /TN "DiscordOnAir" /TR "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\Dev\bots\discord-onair\scripts\run-forever.ps1" /SC ONLOGON /RL LIMITED /F
    ```
 
-   Adjust the path in `-File` if the repo lives somewhere else.
+   Adjust the path in `-File` if the repo lives somewhere else. (If you're
+   in Git Bash rather than PowerShell, prefix the command with
+   `MSYS_NO_PATHCONV=1` — Git Bash otherwise mangles the `/Create`-style
+   flags.)
 
 3. It'll start on your next logon. To start it immediately without
    logging out: `schtasks /Run /TN "DiscordOnAir"`
