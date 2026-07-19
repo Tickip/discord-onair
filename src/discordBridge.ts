@@ -67,6 +67,10 @@ export class DiscordBridge extends EventEmitter {
     await this.loginWithRetry();
     this.emit("connected");
     await this.subscribeToVoiceEvents();
+    // publish current state unconditionally: recompute() only emits on a
+    // change, so without this a startup state matching the default (off)
+    // would never publish anything at all
+    this.emit(STATE_CHANGE, this.onAir);
   }
 
   // Each retry attempt uses a fresh Client: this library's connect()/login()
